@@ -235,7 +235,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Requirements
 
-- Go 1.24 or later
 - OpenAI API key
 - Internet connection for API calls
 
