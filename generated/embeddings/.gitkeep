@@ -1,0 +1,2 @@
+# This file ensures the generated/embeddings directory is tracked by git
+# The actual embedding files are ignored but this directory structure is preserved

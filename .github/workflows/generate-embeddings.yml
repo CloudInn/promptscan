@@ -1,0 +1,70 @@
+name: Generate Embeddings
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'internal/cmd/embeddings-cli/main.go'
+      - 'promptscan.go'
+
+jobs:
+  generate-embeddings:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version-file: go.mod
+
+    - name: Cache Go modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+
+    - name: Install dependencies
+      run: go mod download
+
+    - name: Build embeddings CLI
+      run: go build -o embeddings-cli ./internal/cmd/embeddings-cli
+
+    - name: Check if embeddings need update
+      id: check-embeddings
+      run: |
+        if go run internal/cmd/embeddings-cli/main.go check; then
+          echo "needs_update=false" >> $GITHUB_OUTPUT
+        else
+          echo "needs_update=true" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Generate embeddings
+      if: steps.check-embeddings.outputs.needs_update == 'true'
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      run: |
+        go run internal/cmd/embeddings-cli/main.go generate
+
+    - name: Commit and push embeddings
+      if: steps.check-embeddings.outputs.needs_update == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        git add generated/embeddings/
+        
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "chore: update embeddings to version $(grep 'EmbeddingsVersion.*=' internal/cmd/embeddings-cli/main.go | cut -d'"' -f2)"
+          git push
+        fi
