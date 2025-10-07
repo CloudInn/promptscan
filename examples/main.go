@@ -77,7 +77,7 @@ func runBasicDetectionExample(apiKey string) {
 
 		// Display results
 		fmt.Printf("🎯 Result: %s\n", getResultEmoji(result.InjectionDetected))
-		fmt.Printf("📊 Score: %.3f (Threshold: %.3f)\n", result.OpenAIScore, result.MaxModelScore)
+		fmt.Printf("📊 Score: %.3f (Threshold: %.3f)\n", result.OverallScore, result.MaxModelScore)
 
 		if result.DetectionExplanation != "" {
 			fmt.Printf("📝 Explanation: %s\n", result.DetectionExplanation)
@@ -122,7 +122,7 @@ func runCustomPromptExample(apiKey string) {
 		}
 
 		fmt.Printf("🎯 Result: %s\n", getResultEmoji(result.InjectionDetected))
-		fmt.Printf("📊 Score: %.3f (Threshold: %.3f)\n", result.OpenAIScore, result.MaxModelScore)
+		fmt.Printf("📊 Score: %.3f (Threshold: %.3f)\n", result.OverallScore, result.MaxModelScore)
 
 		if result.DetectionExplanation != "" {
 			fmt.Printf("📝 Explanation: %s\n", result.DetectionExplanation)
