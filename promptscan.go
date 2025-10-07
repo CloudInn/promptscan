@@ -12,7 +12,6 @@ import (
 
 // DetectionResponse represents the result of prompt injection detection
 type DetectionResponse struct {
-	OpenAIScore           float64 `json:"openai_score"`
 	RunLanguageModelCheck bool    `json:"run_language_model_check"`
 	MaxModelScore         float64 `json:"max_model_score"`
 	DetectionExplanation  string  `json:"detection_explanation,omitempty"`
@@ -100,7 +99,6 @@ func (ps *PromptScan) DetectInjection(ctx context.Context, userInput string) (*D
 	if err != nil {
 		return nil, fmt.Errorf("LLM detection failed: %w", err)
 	}
-	response.OpenAIScore = llmScore
 	response.OverallScore = llmScore
 
 	// Check if detection threshold is exceeded
