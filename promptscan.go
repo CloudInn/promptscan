@@ -15,12 +15,11 @@ type DetectionResponse struct {
 	OpenAIScore           float64 `json:"openai_score"`
 	RunLanguageModelCheck bool    `json:"run_language_model_check"`
 	MaxModelScore         float64 `json:"max_model_score"`
-	InjectionDetected     bool    `json:"injection_detected"`
 	DetectionExplanation  string  `json:"detection_explanation,omitempty"`
 
 	// Overall detection results
-	DetectionTriggered bool    `json:"total_detection_triggered"`
-	OverallScore       float64 `json:"overall_score"`
+	InjectionDetected bool    `json:"injection_detected"`
+	OverallScore      float64 `json:"overall_score"`
 }
 
 // Config holds the configuration for the PromptScan detector
@@ -107,7 +106,6 @@ func (ps *PromptScan) DetectInjection(ctx context.Context, userInput string) (*D
 	// Check if detection threshold is exceeded
 	detectionTriggered := llmScore >= ps.config.MaxModelScore
 	response.InjectionDetected = detectionTriggered
-	response.DetectionTriggered = detectionTriggered
 
 	if detectionTriggered {
 		response.DetectionExplanation = fmt.Sprintf("LLM detection triggered (score: %.3f >= threshold: %.3f)", llmScore, ps.config.MaxModelScore)
