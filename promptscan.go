@@ -148,6 +148,9 @@ func (ps *PromptScan) detectUsingLLM(ctx context.Context, userInput string) (flo
 				},
 			},
 		}},
+		Temperature: openai.Float(0.1), // Deterministic output
+		Seed:        openai.Int(42),    // Fixed seed for reproducibility
+		// TopP, FrequencyPenalty, PresencePenalty can be set if needed
 		Model: shared.ChatModel(ps.config.Model),
 		Tools: []openai.ChatCompletionToolUnionParam{detectionFunction},
 		ToolChoice: openai.ChatCompletionToolChoiceOptionUnionParam{
