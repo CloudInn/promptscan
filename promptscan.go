@@ -131,7 +131,7 @@ func (ps *PromptScan) detectUsingLLM(ctx context.Context, userInput string) (flo
 				},
 				"reason": map[string]interface{}{
 					"type":        "string",
-					"description": "Explanation if score is above 0.7, describing why the input is suspicious",
+					"description": "Explanation if score is above 0.4, describing why the input is suspicious",
 				},
 			},
 			"required":             []string{"score", "reason"},
